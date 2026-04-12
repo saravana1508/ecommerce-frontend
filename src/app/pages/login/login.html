@@ -1,0 +1,177 @@
+<div class="login-page">
+
+  <!-- Left decorative panel -->
+  <div class="login-left" aria-hidden="true">
+    <div class="left-content">
+      <div class="brand-logo">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">Shop<span>Ease</span></span>
+      </div>
+      <h2 class="left-title">Welcome Back!</h2>
+      <p class="left-subtitle">
+        Sign in to access your orders, wishlist, and personalized deals crafted just for you.
+      </p>
+      <div class="left-features">
+        <div class="lf-item">
+          <span class="lf-icon">🚀</span>
+          <span>Exclusive member-only deals</span>
+        </div>
+        <div class="lf-item">
+          <span class="lf-icon">📦</span>
+          <span>Track all your orders</span>
+        </div>
+        <div class="lf-item">
+          <span class="lf-icon">❤️</span>
+          <span>Access your saved wishlist</span>
+        </div>
+        <div class="lf-item">
+          <span class="lf-icon">🔒</span>
+          <span>Safe &amp; secure checkout</span>
+        </div>
+      </div>
+    </div>
+    <!-- Decorative circles -->
+    <div class="deco-circle dc1"></div>
+    <div class="deco-circle dc2"></div>
+    <div class="deco-circle dc3"></div>
+  </div>
+
+  <!-- Right: Login Card -->
+  <div class="login-right">
+    <div class="login-card">
+
+      <!-- Card Header -->
+      <div class="card-header">
+        <h1 class="card-title">Sign In</h1>
+        <p class="card-subtitle">Enter your credentials to continue shopping</p>
+      </div>
+
+      <!-- Login Form -->
+      <form class="login-form" (ngSubmit)="onLogin()" novalidate>
+
+        <!-- Role Selector -->
+        <div class="role-selector">
+          <button
+            type="button"
+            class="role-btn"
+            [ngClass]="{ active: role === 'user' }"
+            (click)="role = 'user'"
+            id="role-user"
+          >
+            👤 User
+          </button>
+          <button
+            type="button"
+            class="role-btn"
+            [ngClass]="{ active: role === 'admin' }"
+            (click)="role = 'admin'"
+            id="role-admin"
+          >
+            🛡️ Admin
+          </button>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              placeholder="you@example.com"
+              [(ngModel)]="email"
+              name="email"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="label-row">
+            <label class="form-label" for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot Password?</a>
+          </div>
+          <div class="input-wrapper">
+            <span class="input-icon">🔑</span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              placeholder="Enter your password"
+              [(ngModel)]="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-pwd-btn"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            >
+              {{ showPassword ? '🙈' : '👁️' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me -->
+        <div class="remember-row">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [(ngModel)]="rememberMe"
+              name="rememberMe"
+              id="rememberMe"
+            />
+            <span class="checkbox-custom"></span>
+            Remember me for 30 days
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="login-submit"
+          class="login-btn"
+          [ngClass]="{ loading: isLoading }"
+          [disabled]="isLoading || !email || !password"
+        >
+          @if (isLoading) {
+            <span class="spinner"></span>
+            Signing in…
+          } @else {
+            Sign In →
+          }
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="or-divider">
+        <span>or continue with</span>
+      </div>
+
+      <!-- Social Logins (dummy) -->
+      <div class="social-login">
+        <button type="button" class="social-btn google-btn">
+          <span>🇬</span> Google
+        </button>
+        <button type="button" class="social-btn">
+          <span>📘</span> Facebook
+        </button>
+      </div>
+
+      <!-- Create Account -->
+      <p class="create-account">
+        Don't have an account?
+        <a routerLink="/login" class="create-link">Create Account</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>

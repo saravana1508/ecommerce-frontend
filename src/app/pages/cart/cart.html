@@ -1,0 +1,148 @@
+<div class="cart-page page-wrapper">
+  <div class="container">
+
+    <div class="page-header">
+      <h1>🛒 My Cart</h1>
+      <p>{{ totalItems }} item{{ totalItems !== 1 ? 's' : '' }} in your cart</p>
+    </div>
+
+    @if (cartItems.length > 0) {
+      <div class="cart-layout">
+
+        <!-- ===== LEFT: CART ITEMS ===== -->
+        <div class="cart-items-section">
+
+          <!-- Delivery Banner -->
+          <div class="delivery-banner">
+            <span class="delivery-icon">🎉</span>
+            <span>Yay! You get <strong>FREE delivery</strong> on this order.</span>
+          </div>
+
+          <!-- Items List -->
+          <div class="cart-items-list">
+            @for (item of cartItems; track item.id) {
+              <div class="cart-item card">
+
+                <div class="item-img-wrap" [style.background]="item.color + '15'">
+                  <span class="item-emoji">{{ item.emoji }}</span>
+                </div>
+
+                <div class="item-details">
+                  <span class="item-category">{{ item.category }}</span>
+                  <h3 class="item-name">{{ item.name }}</h3>
+                  @if (item.size) {
+                    <span class="item-variant">Size: <strong>{{ item.size }}</strong></span>
+                  }
+                  <div class="item-pricing">
+                    <span class="item-price">₹{{ (item.price * item.quantity).toLocaleString('en-IN') }}</span>
+                    <span class="item-unit-price">₹{{ item.price.toLocaleString('en-IN') }} each</span>
+                    <span class="item-discount">{{ getDiscount(item.price, item.originalPrice) }}% off</span>
+                  </div>
+                </div>
+
+                <div class="item-controls">
+                  <div class="qty-control">
+                    <button class="qty-btn" (click)="decreaseQty(item)" [disabled]="item.quantity <= 1">−</button>
+                    <span class="qty-value">{{ item.quantity }}</span>
+                    <button class="qty-btn" (click)="increaseQty(item)" [disabled]="item.quantity >= 10">+</button>
+                  </div>
+                  <div class="item-action-btns">
+                    <button class="action-link save-btn">♡ Save for later</button>
+                    <span class="action-sep">|</span>
+                    <button class="action-link remove-btn" (click)="removeItem(item.id)">🗑 Remove</button>
+                  </div>
+                </div>
+
+              </div>
+            }
+          </div>
+
+          <!-- Coupon -->
+          <div class="coupon-section card">
+            <h4 class="coupon-title">🏷️ Apply Coupon</h4>
+            @if (!couponApplied) {
+              <div class="coupon-input-row">
+                <input
+                  type="text"
+                  [(ngModel)]="couponCode"
+                  placeholder="Enter coupon code  (SAVE10, FLAT200, SHOPEASE)"
+                  class="coupon-input form-control"
+                />
+                <button class="coupon-apply-btn" (click)="applyCoupon()" [disabled]="!couponCode">
+                  Apply
+                </button>
+              </div>
+              <p class="coupon-hint">Try: <strong>SAVE10</strong> · <strong>FLAT200</strong> · <strong>SHOPEASE</strong></p>
+            } @else {
+              <div class="coupon-applied-row">
+                <span class="coupon-success">
+                  ✅ <strong>{{ couponCode.toUpperCase() }}</strong> applied — You save
+                  ₹{{ couponDiscount.toLocaleString('en-IN') }}!
+                </span>
+                <button class="remove-coupon-btn" (click)="removeCoupon()">✕ Remove</button>
+              </div>
+            }
+          </div>
+
+        </div>
+
+        <!-- ===== RIGHT: ORDER SUMMARY ===== -->
+        <div class="order-summary card">
+          <h3 class="summary-title">📋 Price Details</h3>
+          <div class="summary-divider"></div>
+
+          <div class="summary-rows">
+            <div class="summary-row">
+              <span>Price ({{ totalItems }} items)</span>
+              <span>₹{{ subtotal.toLocaleString('en-IN') }}</span>
+            </div>
+            <div class="summary-row discount-row">
+              <span>Discount</span>
+              <span class="discount-val">− ₹{{ totalDiscount.toLocaleString('en-IN') }}</span>
+            </div>
+            @if (couponApplied) {
+              <div class="summary-row coupon-row">
+                <span>Coupon Discount</span>
+                <span class="discount-val">− ₹{{ couponDiscount.toLocaleString('en-IN') }}</span>
+              </div>
+            }
+            <div class="summary-row">
+              <span>Delivery Charges</span>
+              <span class="free-delivery">FREE 🚚</span>
+            </div>
+          </div>
+
+          <div class="summary-divider"></div>
+
+          <div class="summary-total-row">
+            <strong>Total Amount</strong>
+            <strong class="total-amount">₹{{ total.toLocaleString('en-IN') }}</strong>
+          </div>
+
+          <div class="summary-savings">
+            🎉 You will save <strong>₹{{ totalDiscount.toLocaleString('en-IN') }}</strong> on this order
+          </div>
+
+          <button class="checkout-btn" id="checkout-btn">
+            Proceed to Checkout →
+          </button>
+
+          <div class="safe-checkout">
+            <span>🔒 Safe &amp; Secure Payments · Easy Returns</span>
+            <span>100% Authentic Products Guaranteed</span>
+          </div>
+        </div>
+
+      </div>
+
+    } @else {
+      <div class="empty-state card">
+        <span class="empty-icon">🛒</span>
+        <h3>Your cart is empty!</h3>
+        <p>Looks like you haven't added anything yet. Explore our products!</p>
+        <a routerLink="/products" class="btn btn-primary btn-lg">Start Shopping</a>
+      </div>
+    }
+
+  </div>
+</div>

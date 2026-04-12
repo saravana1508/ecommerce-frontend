@@ -1,0 +1,200 @@
+<!-- ===== HERO SECTION ===== -->
+<section class="hero">
+  <div class="hero-content animate-fade-in-up">
+    <span class="hero-eyebrow">🔥 Sale is Live – Up to 80% Off</span>
+    <h1 class="hero-title">
+      Discover Amazing<br>
+      <span class="hero-accent">Deals Every Day</span>
+    </h1>
+    <p class="hero-subtitle">
+      Shop from millions of products across electronics, fashion, home goods, and more. Delivered fast, right to your door.
+    </p>
+    <div class="hero-cta">
+      <a routerLink="/products" class="btn btn-primary btn-lg">
+        🛒 Shop Now
+      </a>
+      <a routerLink="/products" class="btn btn-outline-white btn-lg">
+        Browse Categories
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">2M+</span><span class="stat-label">Products</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">150K+</span><span class="stat-label">Sellers</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">98%</span><span class="stat-label">Happy Customers</span></div>
+    </div>
+  </div>
+  <div class="hero-banner-art">
+    <div class="hero-float-card card-1">📱 New iPhone</div>
+    <div class="hero-float-card card-2">👟 Sneakers Deal</div>
+    <div class="hero-float-card card-3">🎧 50% Off</div>
+    <div class="hero-circle c1"></div>
+    <div class="hero-circle c2"></div>
+    <div class="hero-emoji-bg">🛍️</div>
+  </div>
+</section>
+
+<!-- ===== FEATURE BADGES ===== -->
+<div class="features-strip">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-item">
+        <span class="feature-icon">🚚</span>
+        <div>
+          <strong>Free Delivery</strong>
+          <p>On orders above ₹499</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🔒</span>
+        <div>
+          <strong>Secure Payment</strong>
+          <p>100% protected checkout</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">↩️</span>
+        <div>
+          <strong>Easy Returns</strong>
+          <p>30-day return policy</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🎧</span>
+        <div>
+          <strong>24/7 Support</strong>
+          <p>Always here to help you</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SHOP BY CATEGORY ===== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">🗂️ Shop by Category</h2>
+    <div class="categories-grid">
+      @for (cat of categories; track cat.name) {
+        <a routerLink="/products" class="category-card" [style.--cat-color]="cat.color">
+          <div class="cat-icon-wrap" [style.background]="cat.color + '18'">
+            <span class="cat-emoji">{{ cat.emoji }}</span>
+          </div>
+          <strong class="cat-name">{{ cat.name }}</strong>
+          <span class="cat-count">{{ cat.count }}</span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED PRODUCTS / DEALS ===== -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">⚡ Deal of the Day</h2>
+      <a routerLink="/products" class="view-all-link">View all deals →</a>
+    </div>
+    <div class="products-grid">
+      @for (product of featuredProducts; track product.id) {
+        <div class="product-card card">
+          @if (product.badge) {
+            <span class="product-badge" [class.hot]="product.badge === '50% OFF' || product.badge === 'Best Seller'">
+              {{ product.badge }}
+            </span>
+          }
+          <div class="product-image-wrap" [style.background]="product.color + '18'">
+            <span class="product-emoji">{{ product.emoji }}</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">{{ product.category }}</span>
+            <h3 class="product-name">{{ product.name }}</h3>
+            <div class="product-rating">
+              @for (star of getStarArray(product.rating); track $index) {
+                <span class="star">{{ star === 'full' ? '★' : star === 'half' ? '⯨' : '☆' }}</span>
+              }
+              <span class="rating-count">({{ product.reviews }})</span>
+            </div>
+            <div class="product-pricing">
+              <span class="price">₹{{ product.price.toLocaleString('en-IN') }}</span>
+              <span class="original-price">₹{{ product.originalPrice.toLocaleString('en-IN') }}</span>
+              <span class="discount-pct">{{ getDiscount(product.price, product.originalPrice) }}% off</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-primary btn-sm">🛒 Add to Cart</button>
+              <button class="btn-wishlist" aria-label="Add to wishlist">♡</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROMOTIONAL BANNER ===== -->
+<section class="promo-banner">
+  <div class="container">
+    <div class="promo-grid">
+      <div class="promo-card promo-electronics">
+        <div class="promo-content">
+          <span class="promo-tag">Up to 60% Off</span>
+          <h3>Electronics Sale</h3>
+          <p>Mobiles, Laptops, Tablets & more</p>
+          <a routerLink="/products" class="btn btn-primary btn-sm">Shop Now →</a>
+        </div>
+        <span class="promo-emoji">💻</span>
+      </div>
+      <div class="promo-card promo-fashion">
+        <div class="promo-content">
+          <span class="promo-tag">New Arrivals</span>
+          <h3>Fashion Week</h3>
+          <p>Trending styles for every season</p>
+          <a routerLink="/products" class="btn btn-primary btn-sm">Shop Now →</a>
+        </div>
+        <span class="promo-emoji">👗</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEW ARRIVALS ===== -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">✨ New Arrivals</h2>
+      <a routerLink="/products" class="view-all-link">See all →</a>
+    </div>
+    <div class="products-grid">
+      @for (product of newArrivals; track product.id) {
+        <div class="product-card card">
+          @if (product.badge) {
+            <span class="product-badge new">{{ product.badge }}</span>
+          }
+          <div class="product-image-wrap" [style.background]="product.color + '18'">
+            <span class="product-emoji">{{ product.emoji }}</span>
+          </div>
+          <div class="product-info">
+            <span class="product-category">{{ product.category }}</span>
+            <h3 class="product-name">{{ product.name }}</h3>
+            <div class="product-rating">
+              @for (star of getStarArray(product.rating); track $index) {
+                <span class="star">{{ star === 'full' ? '★' : star === 'half' ? '⯨' : '☆' }}</span>
+              }
+              <span class="rating-count">({{ product.reviews }})</span>
+            </div>
+            <div class="product-pricing">
+              <span class="price">₹{{ product.price.toLocaleString('en-IN') }}</span>
+              <span class="original-price">₹{{ product.originalPrice.toLocaleString('en-IN') }}</span>
+              <span class="discount-pct">{{ getDiscount(product.price, product.originalPrice) }}% off</span>
+            </div>
+            <div class="product-actions">
+              <button class="btn btn-primary btn-sm">🛒 Add to Cart</button>
+              <button class="btn-wishlist" aria-label="Add to wishlist">♡</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

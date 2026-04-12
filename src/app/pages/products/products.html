@@ -1,0 +1,208 @@
+<div class="products-page page-wrapper">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>🛍️ All Products</h1>
+      <p>Showing {{ filteredProducts.length }} of {{ allProducts.length }} products</p>
+    </div>
+
+    <div class="products-layout">
+
+      <!-- ===== SIDEBAR FILTERS ===== -->
+      <aside class="filters-sidebar">
+
+        <div class="sidebar-header">
+          <h3>🔧 Filters</h3>
+          <button class="reset-btn" (click)="resetFilters()">Reset All</button>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="filter-section">
+          <h4 class="filter-title">Category</h4>
+          <div class="filter-options">
+            @for (cat of categories; track cat) {
+              <label class="filter-radio">
+                <input
+                  type="radio"
+                  name="category"
+                  [value]="cat"
+                  [(ngModel)]="selectedCategory"
+                />
+                <span class="radio-dot"></span>
+                <span class="filter-label">{{ cat }}</span>
+                <span class="filter-count">
+                  {{ cat === 'All' ? allProducts.length : allProducts.filter(p => p.category === cat).length }}
+                </span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-section">
+          <h4 class="filter-title">
+            Price Range
+            <span class="price-display">Up to ₹{{ priceRange.toLocaleString('en-IN') }}</span>
+          </h4>
+          <input
+            type="range"
+            min="500"
+            max="200000"
+            step="500"
+            [(ngModel)]="priceRange"
+            class="price-range-slider"
+          />
+          <div class="range-labels">
+            <span>₹500</span>
+            <span>₹2,00,000</span>
+          </div>
+        </div>
+
+        <!-- Minimum Rating -->
+        <div class="filter-section">
+          <h4 class="filter-title">Minimum Rating</h4>
+          <div class="rating-filter-options">
+            @for (r of [4, 3, 2, 1]; track r) {
+              <label class="filter-radio">
+                <input
+                  type="radio"
+                  name="rating"
+                  [value]="r"
+                  [(ngModel)]="minRating"
+                />
+                <span class="radio-dot"></span>
+                <span class="stars-display">{{ '★'.repeat(r) }}{{ '☆'.repeat(5 - r) }}</span>
+                <span class="filter-label">& Above</span>
+              </label>
+            }
+            <label class="filter-radio">
+              <input type="radio" name="rating" [value]="0" [(ngModel)]="minRating" />
+              <span class="radio-dot"></span>
+              <span class="filter-label">All Ratings</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Brands -->
+        <div class="filter-section">
+          <h4 class="filter-title">Brands</h4>
+          <div class="filter-options">
+            @for (brand of brands; track brand) {
+              <label class="filter-checkbox">
+                <input
+                  type="checkbox"
+                  [checked]="isBrandSelected(brand)"
+                  (change)="toggleBrand(brand)"
+                />
+                <span class="check-box"></span>
+                <span class="filter-label">{{ brand }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- ===== PRODUCTS MAIN AREA ===== -->
+      <div class="products-main">
+
+        <!-- Toolbar -->
+        <div class="products-toolbar">
+          <div class="sort-controls">
+            <label class="sort-label" for="sort-select">Sort by:</label>
+            <select id="sort-select" [(ngModel)]="selectedSort" class="sort-select">
+              @for (opt of sortOptions; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="view-controls">
+            <button
+              class="view-btn"
+              [ngClass]="{ active: viewMode === 'grid' }"
+              (click)="viewMode = 'grid'"
+              aria-label="Grid view"
+            >⊞</button>
+            <button
+              class="view-btn"
+              [ngClass]="{ active: viewMode === 'list' }"
+              (click)="viewMode = 'list'"
+              aria-label="List view"
+            >☰</button>
+          </div>
+        </div>
+
+        <!-- Category Pills (quick filters) -->
+        <div class="cat-pills-row">
+          @for (cat of categories; track cat) {
+            <button
+              class="cat-pill-btn"
+              [ngClass]="{ active: selectedCategory === cat }"
+              (click)="selectedCategory = cat"
+            >{{ cat }}</button>
+          }
+        </div>
+
+        <!-- Product Grid / List -->
+        @if (filteredProducts.length > 0) {
+          <div class="products-grid" [ngClass]="{ 'list-view': viewMode === 'list' }">
+            @for (product of filteredProducts; track product.id) {
+              <div class="product-card" [ngClass]="{ 'out-of-stock': !product.inStock }">
+
+                @if (product.badge) {
+                  <span class="prod-badge">{{ product.badge }}</span>
+                }
+                @if (!product.inStock) {
+                  <span class="oos-badge">Out of Stock</span>
+                }
+
+                <div class="prod-img-wrap" [style.background]="product.color + '15'">
+                  <span class="prod-emoji">{{ product.emoji }}</span>
+                </div>
+
+                <div class="prod-info">
+                  <div class="prod-meta">
+                    <span class="prod-cat">{{ product.category }}</span>
+                    <span class="prod-brand">{{ product.brand }}</span>
+                  </div>
+                  <h3 class="prod-name">{{ product.name }}</h3>
+
+                  <div class="prod-rating">
+                    <span class="stars">{{ getStarArray(product.rating) }}</span>
+                    <span class="rating-val">{{ product.rating }}</span>
+                    <span class="rating-cnt">({{ product.reviews.toLocaleString() }})</span>
+                  </div>
+
+                  <div class="prod-pricing">
+                    <span class="prod-price">₹{{ product.price.toLocaleString('en-IN') }}</span>
+                    <span class="prod-original">₹{{ product.originalPrice.toLocaleString('en-IN') }}</span>
+                    <span class="prod-discount">{{ getDiscount(product.price, product.originalPrice) }}% off</span>
+                  </div>
+
+                  <div class="prod-actions">
+                    <button class="btn-cart" [disabled]="!product.inStock">
+                      {{ product.inStock ? '🛒 Add to Cart' : 'Notify Me' }}
+                    </button>
+                    <button class="btn-wish" aria-label="Add to wishlist">♡</button>
+                  </div>
+                </div>
+
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <h3>No products found</h3>
+            <p>Try adjusting your filters to see more results.</p>
+            <button class="btn btn-secondary" (click)="resetFilters()">Reset Filters</button>
+          </div>
+        }
+
+      </div>
+    </div>
+
+  </div>
+</div>

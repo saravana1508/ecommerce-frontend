@@ -1,0 +1,78 @@
+<div class="wishlist-page page-wrapper">
+  <div class="container">
+
+    <div class="page-header">
+      <h1>❤️ My Wishlist</h1>
+      <p>{{ wishlistItems.length }} saved item{{ wishlistItems.length !== 1 ? 's' : '' }}</p>
+    </div>
+
+    @if (wishlistItems.length > 0) {
+
+      <div class="wishlist-grid">
+        @for (item of wishlistItems; track item.id) {
+          <div class="wish-card card">
+
+            <!-- Remove from wishlist -->
+            <button class="remove-wish-btn" (click)="removeItem(item.id)" aria-label="Remove from wishlist" title="Remove">
+              ✕
+            </button>
+
+            <!-- Filled heart indicator -->
+            <div class="wish-heart">❤️</div>
+
+            @if (item.badge) {
+              <span class="wish-badge">{{ item.badge }}</span>
+            }
+
+            @if (!item.inStock) {
+              <span class="oos-tag">Out of Stock</span>
+            }
+
+            <!-- Product Image -->
+            <div class="wish-img-wrap" [style.background]="item.color + '15'">
+              <span class="wish-emoji">{{ item.emoji }}</span>
+            </div>
+
+            <!-- Product Info -->
+            <div class="wish-info">
+              <span class="wish-category">{{ item.category }}</span>
+              <h3 class="wish-name">{{ item.name }}</h3>
+
+              <div class="wish-rating">
+                <span class="stars">★ {{ item.rating }}</span>
+                <span class="wish-reviews">({{ item.reviews.toLocaleString() }})</span>
+              </div>
+
+              <div class="wish-pricing">
+                <span class="wish-price">₹{{ item.price.toLocaleString('en-IN') }}</span>
+                <span class="wish-original">₹{{ item.originalPrice.toLocaleString('en-IN') }}</span>
+                <span class="wish-discount">{{ getDiscount(item.price, item.originalPrice) }}% off</span>
+              </div>
+
+              <div class="wish-actions">
+                <button
+                  class="btn-add-cart"
+                  [disabled]="!item.inStock"
+                  (click)="moveToCart(item)"
+                >
+                  {{ item.inStock ? '🛒 Move to Cart' : 'Notify Me' }}
+                </button>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+
+    } @else {
+      <!-- Empty State -->
+      <div class="empty-state card">
+        <span class="empty-icon">💔</span>
+        <h3>Your wishlist is empty</h3>
+        <p>Save items you love to your wishlist. Review them anytime and easily move them to cart.</p>
+        <a routerLink="/products" class="btn btn-primary btn-lg">Explore Products</a>
+      </div>
+    }
+
+  </div>
+</div>

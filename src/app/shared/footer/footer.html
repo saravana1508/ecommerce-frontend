@@ -1,0 +1,101 @@
+<footer class="footer">
+
+  <!-- Main Footer Grid -->
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <a routerLink="/" class="footer-logo">
+            <span class="logo-icon">🛒</span>
+            <span class="logo-text">Shop<span>Ease</span></span>
+          </a>
+          <p class="footer-tagline">
+            Your ultimate shopping destination. Discover amazing deals on thousands of products from top brands.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" aria-label="Facebook">📘</a>
+            <a href="#" class="social-link" aria-label="Instagram">📸</a>
+            <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-link" aria-label="YouTube">▶️</a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Quick Links</h4>
+          <ul class="footer-links">
+            @for (link of quickLinks; track link.label) {
+              <li>
+                <a [routerLink]="link.path">{{ link.label }}</a>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Categories -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Shop by Category</h4>
+          <ul class="footer-links">
+            @for (cat of categories; track cat) {
+              <li>
+                <a routerLink="/products">{{ cat }}</a>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="footer-col">
+          <h4 class="footer-col-title">Customer Support</h4>
+          <ul class="footer-links">
+            @for (item of supportLinks; track item) {
+              <li><a href="#">{{ item }}</a></li>
+            }
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="footer-col footer-newsletter">
+          <h4 class="footer-col-title">Stay Updated</h4>
+          <p class="newsletter-text">Subscribe to get the latest deals and offers directly in your inbox.</p>
+          <div class="newsletter-form">
+            <input type="email" placeholder="Enter your email" class="newsletter-input" />
+            <button class="newsletter-btn">Subscribe</button>
+          </div>
+          <div class="footer-badges">
+            <span class="trust-badge">🔒 Secure Checkout</span>
+            <span class="trust-badge">↩️ Easy Returns</span>
+            <span class="trust-badge">🚚 Free Delivery</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom Bar -->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="copyright">
+          &copy; {{ currentYear }} ShopEase. All rights reserved.
+        </p>
+        <div class="payment-methods">
+          <span class="pay-icon">💳</span>
+          <span class="pay-icon">🏧</span>
+          <span class="pay-icon">📱</span>
+          <span class="pay-icon">🏦</span>
+          <span class="pay-label">Visa &bull; Mastercard &bull; UPI &bull; Net Banking</span>
+        </div>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</footer>

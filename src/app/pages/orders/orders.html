@@ -1,0 +1,118 @@
+<div class="orders-page page-wrapper">
+  <div class="container">
+
+    <div class="page-header">
+      <h1>📦 My Orders</h1>
+      <p>Track, manage and review all your orders in one place.</p>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="order-tabs">
+      @for (tab of tabs; track tab) {
+        <button
+          class="tab-btn"
+          [ngClass]="{ active: activeTab === tab }"
+          (click)="activeTab = tab"
+        >
+          {{ tab }}
+          @if (getTabCount(tab) > 0) {
+            <span class="tab-count">{{ getTabCount(tab) }}</span>
+          }
+        </button>
+      }
+    </div>
+
+    <!-- Orders List -->
+    @if (filteredOrders.length > 0) {
+      <div class="orders-list">
+        @for (order of filteredOrders; track order.id) {
+          <div class="order-card card">
+
+            <!-- Order Header -->
+            <div class="order-header">
+              <div class="order-meta">
+                <span class="order-id">Order #{{ order.id }}</span>
+                <span class="order-date">📅 Placed on {{ order.date }}</span>
+              </div>
+              <span class="badge {{ getStatusBadgeClass(order.status) }}">
+                {{ getStatusIcon(order.status) }} {{ order.status }}
+              </span>
+            </div>
+
+            <div class="order-divider"></div>
+
+            <!-- Order Items -->
+            <div class="order-items">
+              @for (item of order.items; track item.name) {
+                <div class="order-item-row">
+                  <span class="order-item-emoji">{{ item.emoji }}</span>
+                  <div class="order-item-detail">
+                    <span class="order-item-name">{{ item.name }}</span>
+                    <span class="order-item-sub">Qty: {{ item.qty }} &nbsp;·&nbsp; ₹{{ item.price.toLocaleString('en-IN') }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="order-divider"></div>
+
+            <!-- Order Footer -->
+            <div class="order-footer">
+              <div class="order-info-grid">
+                <div class="order-info-item">
+                  <span class="info-label">📍 Delivery Address</span>
+                  <span class="info-value">{{ order.address }}</span>
+                </div>
+                <div class="order-info-item">
+                  <span class="info-label">💳 Payment</span>
+                  <span class="info-value">{{ order.paymentMethod }}</span>
+                </div>
+                @if (order.trackingId) {
+                  <div class="order-info-item">
+                    <span class="info-label">🚚 Tracking ID</span>
+                    <span class="info-value tracking-id">{{ order.trackingId }}</span>
+                  </div>
+                }
+                <div class="order-info-item">
+                  <span class="info-label">💰 Order Total</span>
+                  <span class="info-value order-total">₹{{ order.total.toLocaleString('en-IN') }}</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="order-actions">
+                @if (order.status === 'Delivered') {
+                  <button class="order-action-btn btn-review">⭐ Write Review</button>
+                  <button class="order-action-btn btn-return">↩️ Return</button>
+                }
+                @if (order.status === 'Shipped') {
+                  <button class="order-action-btn btn-track">🗺️ Track Order</button>
+                }
+                @if (order.status === 'Processing') {
+                  <button class="order-action-btn btn-cancel">❌ Cancel Order</button>
+                }
+                <button class="order-action-btn btn-invoice">🧾 Invoice</button>
+                <button class="order-action-btn btn-support">💬 Get Help</button>
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state card">
+        <span class="empty-icon">📦</span>
+        <h3>No orders found</h3>
+        <p>
+          @if (activeTab === 'All') {
+            You haven't placed any orders yet. Start shopping!
+          } @else {
+            No {{ activeTab }} orders found.
+          }
+        </p>
+        <a routerLink="/products" class="btn btn-primary btn-lg">Shop Now</a>
+      </div>
+    }
+
+  </div>
+</div>
