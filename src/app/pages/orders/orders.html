@@ -83,7 +83,7 @@
               <div class="order-actions">
                 @if (order.status === 'Delivered') {
                   <button class="order-action-btn btn-review">⭐ Write Review</button>
-                  <button class="order-action-btn btn-return">↩️ Return</button>
+                  <button class="order-action-btn btn-return" (click)="openReturnModal(order.id)">↩️ Return</button>
                 }
                 @if (order.status === 'Shipped') {
                   <button class="order-action-btn btn-track">🗺️ Track Order</button>
@@ -114,5 +114,35 @@
       </div>
     }
 
+  </div>
+</div>
+
+<!-- Return Modal (Amazon Style) -->
+<div class="modal-overlay" *ngIf="showReturnModal" (click)="closeReturnModal()">
+  <div class="return-modal card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Why are you returning this?</h2>
+      <button class="close-btn" (click)="closeReturnModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="returnReason">Reason for return</label>
+        <select id="returnReason" class="form-control" [(ngModel)]="returnReason">
+          <option value="" disabled selected>Choose a response</option>
+          <option *ngFor="let reason of returnReasonsList" [value]="reason">{{ reason }}</option>
+        </select>
+      </div>
+      <div class="form-group" *ngIf="returnReason">
+        <label for="returnComment">Comments (required)</label>
+        <textarea id="returnComment" class="form-control" rows="3" [(ngModel)]="returnComment" placeholder="Please describe the issue in detail..."></textarea>
+      </div>
+      <div class="return-warning">
+        <p>Return eligible through ShopEase guarantee.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeReturnModal()">Cancel</button>
+      <button class="btn btn-primary" [disabled]="!returnReason" (click)="submitReturn()">Continue</button>
+    </div>
   </div>
 </div>
