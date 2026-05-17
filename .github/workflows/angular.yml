@@ -22,9 +22,9 @@ jobs:
         with:
           node-version: 20
 
-      # Clean install of dependencies
+      # Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       # Build the app with the correct base href for GitHub Pages
       - name: Build Angular app
