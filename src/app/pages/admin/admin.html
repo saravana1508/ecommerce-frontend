@@ -1,0 +1,72 @@
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" [ngClass]="{ open: sidebarOpen }">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="logo-icon">⚙️</span>
+        <span class="logo-text" *ngIf="sidebarOpen">AdminHub</span>
+      </div>
+      <button class="sidebar-close" (click)="toggleSidebar()" *ngIf="sidebarOpen">
+        ✕
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label" *ngIf="sidebarOpen">MAIN</div>
+        <a
+          *ngFor="let item of navItems"
+          [routerLink]="item.route"
+          class="nav-item"
+          routerLinkActive="active"
+        >
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label" *ngIf="sidebarOpen">{{ item.label }}</span>
+          <span class="nav-badge" *ngIf="item.badge && sidebarOpen">{{ item.badge }}</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="onLogout()" [title]="sidebarOpen ? '' : 'Logout'">
+        <span class="logout-icon">🚪</span>
+        <span class="logout-text" *ngIf="sidebarOpen">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-main">
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="header-left">
+        <button class="menu-toggle" (click)="toggleSidebar()">
+          ☰
+        </button>
+        <h1 class="page-title">Admin Dashboard</h1>
+      </div>
+
+      <div class="header-right">
+        <div class="header-info">
+          <div class="user-info">
+            <span class="user-avatar">👤</span>
+            <div class="user-details">
+              <div class="user-name">{{ currentUser }}</div>
+              <div class="user-role">Administrator</div>
+            </div>
+          </div>
+          <button class="logout-btn-header" (click)="onLogout()" title="Logout">
+            🚪
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="admin-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+</div>

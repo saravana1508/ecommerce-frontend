@@ -43,33 +43,20 @@
       <!-- Card Header -->
       <div class="card-header">
         <h1 class="card-title">Sign In</h1>
-        <p class="card-subtitle">Enter your credentials to continue shopping</p>
+        <p class="card-subtitle">Enter your credentials to continue</p>
+        <p class="card-hint">Demo: admin@example.com / Admin@123 (Admin) | user@example.com / User@123 (User)</p>
       </div>
 
       <!-- Login Form -->
       <form class="login-form" (ngSubmit)="onLogin()" novalidate>
 
-        <!-- Role Selector -->
-        <div class="role-selector">
-          <button
-            type="button"
-            class="role-btn"
-            [ngClass]="{ active: role === 'user' }"
-            (click)="role = 'user'"
-            id="role-user"
-          >
-            👤 User
-          </button>
-          <button
-            type="button"
-            class="role-btn"
-            [ngClass]="{ active: role === 'admin' }"
-            (click)="role = 'admin'"
-            id="role-admin"
-          >
-            🛡️ Admin
-          </button>
-        </div>
+        <!-- Error Message -->
+        @if (errorMessage) {
+          <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
 
         <!-- Email -->
         <div class="form-group">
