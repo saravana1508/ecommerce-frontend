@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - pre-develop
 
 # Allow this workflow to write to the gh-pages branch
 permissions:
