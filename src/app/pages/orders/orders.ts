@@ -1,99 +1,41 @@
-import { Component } from '@angular/core';
-import { NgClass } from '@angular/common';
-
-type OrderStatus = 'Delivered' | 'Shipped' | 'Processing' | 'Cancelled' | 'Returned';
-
-interface OrderItem {
-  name: string;
-  emoji: string;
-  qty: number;
-  price: number;
-}
-
-interface Order {
-  id: string;
-  date: string;
-  status: OrderStatus;
-  items: OrderItem[];
-  total: number;
-  address: string;
-  paymentMethod: string;
-  trackingId?: string;
-}
+import { Component, inject, OnInit } from '@angular/core';
+import { NgClass, NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { OrderService, Order, OrderStatus } from '../../services/order.service';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [NgClass],
+  imports: [NgClass, NgIf, NgFor, FormsModule],
   templateUrl: './orders.html',
   styleUrl: './orders.css',
 })
-export class OrdersComponent {
+export class OrdersComponent implements OnInit {
+  private orderService = inject(OrderService);
+
   activeTab: OrderStatus | 'All' = 'All';
-
   tabs: (OrderStatus | 'All')[] = ['All', 'Delivered', 'Shipped', 'Processing', 'Cancelled', 'Returned'];
+  orders: Order[] = [];
 
-  orders: Order[] = [
-    {
-      id: 'ORD-2025-00128',
-      date: '10 Apr 2025',
-      status: 'Delivered',
-      items: [
-        { name: 'Sony WH-1000XM5 Headphones', emoji: '🎧', qty: 1, price: 24990 },
-        { name: 'Floral Print Maxi Dress',      emoji: '👗', qty: 1, price: 1499  },
-      ],
-      total: 26489,
-      address: '42, MG Road, Bengaluru, Karnataka 560001',
-      paymentMethod: 'UPI (Google Pay)',
-      trackingId: 'DTDC-9921884',
-    },
-    {
-      id: 'ORD-2025-00121',
-      date: '03 Apr 2025',
-      status: 'Shipped',
-      items: [
-        { name: 'Nike Air Max 270', emoji: '👟', qty: 2, price: 19990 },
-      ],
-      total: 19990,
-      address: '8, Anna Salai, Chennai, Tamil Nadu 600002',
-      paymentMethod: 'Credit Card (HDFC)',
-      trackingId: 'BLUEDART-88341',
-    },
-    {
-      id: 'ORD-2025-00114',
-      date: '26 Mar 2025',
-      status: 'Processing',
-      items: [
-        { name: 'Apple MacBook Air M3',     emoji: '💻', qty: 1, price: 99900 },
-        { name: 'Smart Watch Series 9',     emoji: '⌚', qty: 1, price: 18999 },
-      ],
-      total: 118899,
-      address: '22, Jubilee Hills, Hyderabad, Telangana 500033',
-      paymentMethod: 'Net Banking (SBI)',
-    },
-    {
-      id: 'ORD-2025-00098',
-      date: '15 Mar 2025',
-      status: 'Cancelled',
-      items: [
-        { name: 'Penguin Classic Book Set', emoji: '📚', qty: 1, price: 1999 },
-      ],
-      total: 1999,
-      address: '5, Park Street, Kolkata, West Bengal 700016',
-      paymentMethod: 'Debit Card (Axis)',
-    },
-    {
-      id: 'ORD-2025-00083',
-      date: '28 Feb 2025',
-      status: 'Returned',
-      items: [
-        { name: 'Yoga Mat + Gym Bag Combo', emoji: '🧘', qty: 1, price: 1249 },
-      ],
-      total: 1249,
-      address: '17, Civil Lines, Pune, Maharashtra 411001',
-      paymentMethod: 'Wallet (Paytm)',
-    },
+  // Return Modal State
+  showReturnModal = false;
+  returningOrderId: string | null = null;
+  returnReason = '';
+  returnComment = '';
+  returnReasonsList = [
+    'Item defective or doesn\'t work',
+    'Bought by mistake',
+    'Better price available',
+    'Product and shipping box both damaged',
+    'Item arrived too late',
+    'Missing parts or accessories',
+    'Inaccurate website description',
+    'No longer needed'
   ];
+
+  ngOnInit() {
+    this.orders = this.orderService.getOrders();
+  }
 
   get filteredOrders(): Order[] {
     if (this.activeTab === 'All') return this.orders;
@@ -125,5 +67,32 @@ export class OrdersComponent {
   getTabCount(tab: OrderStatus | 'All'): number {
     if (tab === 'All') return this.orders.length;
     return this.orders.filter(o => o.status === tab).length;
+  }
+
+  // --- Return Flow Methods ---
+
+  canReturn(status: OrderStatus): boolean {
+    return status === 'Delivered' || status === 'Shipped';
+  }
+
+  openReturnModal(orderId: string) {
+    this.returningOrderId = orderId;
+    this.returnReason = '';
+    this.returnComment = '';
+    this.showReturnModal = true;
+  }
+
+  closeReturnModal() {
+    this.showReturnModal = false;
+    this.returningOrderId = null;
+  }
+
+  submitReturn() {
+    if (!this.returningOrderId || !this.returnReason) return;
+    
+    this.orderService.updateOrderStatus(this.returningOrderId, 'Returned', this.returnReason, this.returnComment);
+    // Re-fetch to ensure reactivity if needed, though reference is the same
+    this.orders = this.orderService.getOrders();
+    this.closeReturnModal();
   }
 }

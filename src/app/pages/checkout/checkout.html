@@ -1,0 +1,175 @@
+<div class="checkout-page page-wrapper">
+  <!-- Minimal Header -->
+  <header class="checkout-header">
+    <div class="container header-content">
+      <a routerLink="/" class="logo">🛒 ShopEase</a>
+      <h1 class="checkout-title">Checkout (<span class="text-primary">{{ totalItems }} items</span>)</h1>
+      <div class="secure-badge">🔒 <span>Secure checkout</span></div>
+    </div>
+  </header>
+
+  <div class="container checkout-container">
+    <div class="checkout-layout" *ngIf="activeStep !== 4">
+      
+      <!-- ===== LEFT COLUMN: STEPS ===== -->
+      <div class="checkout-steps">
+        
+        <!-- STEP 1: DELIVERY ADDRESS -->
+        <div class="checkout-step card" [class.active-step]="activeStep === 1">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-number" [class.completed]="activeStep > 1">1</span>
+              <h2 class="step-title">Delivery address</h2>
+            </div>
+            <button class="change-btn" *ngIf="activeStep > 1" (click)="setStep(1)">Change</button>
+          </div>
+          
+          <div class="step-content" *ngIf="activeStep === 1">
+            <div class="address-list">
+              <div class="address-option" *ngFor="let addr of addresses" [class.selected]="selectedAddressId === addr.id" (click)="selectedAddressId = addr.id">
+                <input type="radio" name="address" [value]="addr.id" [(ngModel)]="selectedAddressId" (click)="$event.stopPropagation()">
+                <div class="address-details">
+                  <strong>{{ addr.name }}</strong> <span class="badge">{{ addr.type }}</span>
+                  <p>{{ addr.street }}, {{ addr.city }}, {{ addr.state }} {{ addr.pin }}</p>
+                  <p>Phone: {{ addr.phone }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-primary" (click)="useThisAddress()">Use this address</button>
+            </div>
+          </div>
+
+          <div class="step-summary" *ngIf="activeStep > 1 && selectedAddress">
+            <p><strong>{{ selectedAddress.name }}</strong></p>
+            <p>{{ selectedAddress.street }}, {{ selectedAddress.city }}, {{ selectedAddress.state }} {{ selectedAddress.pin }}</p>
+          </div>
+        </div>
+
+        <!-- STEP 2: PAYMENT METHOD -->
+        <div class="checkout-step card" [class.active-step]="activeStep === 2">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-number" [class.completed]="activeStep > 2">2</span>
+              <h2 class="step-title">Payment method</h2>
+            </div>
+            <button class="change-btn" *ngIf="activeStep > 2" (click)="setStep(2)">Change</button>
+          </div>
+
+          <div class="step-content" *ngIf="activeStep === 2">
+            <div class="payment-list">
+              <div class="payment-option" *ngFor="let method of paymentMethods" [class.selected]="selectedPaymentMethod === method.id" (click)="selectedPaymentMethod = method.id">
+                <input type="radio" name="payment" [value]="method.id" [(ngModel)]="selectedPaymentMethod" (click)="$event.stopPropagation()">
+                <div class="payment-details">
+                  <strong>{{ method.name }}</strong>
+                  <p>{{ method.description }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-primary" (click)="useThisPaymentMethod()">Use this payment method</button>
+            </div>
+          </div>
+
+          <div class="step-summary" *ngIf="activeStep > 2 && selectedPayment">
+            <p><strong>{{ selectedPayment.name }}</strong></p>
+          </div>
+        </div>
+
+        <!-- STEP 3: REVIEW ITEMS -->
+        <div class="checkout-step card" [class.active-step]="activeStep === 3">
+          <div class="step-header">
+            <div class="step-title-group">
+              <span class="step-number">3</span>
+              <h2 class="step-title">Review items and delivery</h2>
+            </div>
+          </div>
+
+          <div class="step-content" *ngIf="activeStep === 3">
+            <div class="review-warning">
+              <p>Please review your order. By placing your order, you agree to ShopEase's privacy notice and conditions of use.</p>
+            </div>
+            
+            <div class="order-items-list">
+              <div class="order-item" *ngFor="let item of orderItems">
+                <div class="item-img-wrap" [style.background]="item.imgColor + '15'">
+                  <span class="item-emoji">{{ item.emoji }}</span>
+                </div>
+                <div class="item-details">
+                  <h4 class="item-name">{{ item.name }}</h4>
+                  <div class="item-meta">
+                    <span class="item-price">₹{{ item.price.toLocaleString('en-IN') }}</span>
+                    <span class="item-qty">Qty: {{ item.quantity }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="place-order-section">
+              <button class="btn btn-primary btn-lg btn-block final-place-btn" (click)="placeOrder()">
+                Place your order
+              </button>
+              <div class="order-total-inline">
+                <strong>Order Total: <span class="text-danger">₹{{ totalAmount.toLocaleString('en-IN') }}</span></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== RIGHT COLUMN: SUMMARY ===== -->
+      <div class="checkout-sidebar">
+        <div class="order-summary card sticky-summary">
+          <button class="btn btn-primary btn-block place-order-top" [disabled]="activeStep !== 3" (click)="activeStep === 3 ? placeOrder() : null">
+            Place your order
+          </button>
+          <p class="summary-disclaimer">By placing your order, you agree to ShopEase's privacy notice and conditions of use.</p>
+          
+          <div class="summary-divider"></div>
+          
+          <h3 class="summary-title">Order Summary</h3>
+          <div class="summary-rows">
+            <div class="summary-row">
+              <span>Items:</span>
+              <span>₹{{ subtotal.toLocaleString('en-IN') }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Delivery:</span>
+              <span>₹{{ deliveryCharge.toLocaleString('en-IN') }}</span>
+            </div>
+          </div>
+          
+          <div class="summary-divider"></div>
+          
+          <div class="summary-total-row">
+            <strong>Order Total:</strong>
+            <strong class="total-amount">₹{{ totalAmount.toLocaleString('en-IN') }}</strong>
+          </div>
+
+          <div class="how-are-costs-calculated">
+            <a href="javascript:void(0)">How are delivery costs calculated?</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ===== SUCCESS LAYOUT ===== -->
+    <div class="success-layout card" *ngIf="activeStep === 4">
+      <div class="success-icon">✅</div>
+      <h2>Order Placed Successfully!</h2>
+      <p class="success-msg">Thank you for shopping with ShopEase. Your order has been placed and is being processed.</p>
+      
+      <div class="success-details">
+        <p><strong>Order Total:</strong> ₹{{ totalAmount.toLocaleString('en-IN') }}</p>
+        <p><strong>Delivery to:</strong> {{ selectedAddress?.name }}</p>
+      </div>
+
+      <div class="success-actions">
+        <button class="btn btn-primary btn-lg" routerLink="/">Continue Shopping</button>
+        <button class="btn btn-secondary btn-lg" routerLink="/orders">View Orders</button>
+      </div>
+    </div>
+  </div>
+</div>
