@@ -1,0 +1,138 @@
+<div class="inventory-container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">📦 Inventory Management</h1>
+      <p class="page-subtitle">Monitor product stock levels and alerts</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon total">📦</div>
+      <div class="stat-content">
+        <div class="stat-label">Total Items</div>
+        <div class="stat-value">{{ totalItems }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon instock">✓</div>
+      <div class="stat-content">
+        <div class="stat-label">Total Stock</div>
+        <div class="stat-value">{{ totalStock }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon lowstock">⚠️</div>
+      <div class="stat-content">
+        <div class="stat-label">Low Stock</div>
+        <div class="stat-value">{{ lowStockCount }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon outofstock">✕</div>
+      <div class="stat-content">
+        <div class="stat-label">Out of Stock</div>
+        <div class="stat-value">{{ outOfStockCount }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Table -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">📋 Inventory Items</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product ID</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of inventoryItems" [ngClass]="'status-' + item.status">
+              <td>
+                <span class="id-badge">{{ item.id }}</span>
+              </td>
+              <td>
+                <div class="product-name">
+                  <span class="product-icon">📦</span>
+                  <span>{{ item.productName }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="category-badge">{{ item.category }}</span>
+              </td>
+              <td>
+                <div class="stock-cell">
+                  <div class="stock-info">
+                    <span class="stock-number">{{ item.stock }}</span>
+                    <span class="stock-unit">units</span>
+                  </div>
+                  <div class="stock-bar">
+                    <div
+                      class="stock-fill"
+                      [style.width.%]="Math.min((item.stock / item.threshold) * 100, 100)"
+                      [ngClass]="{
+                        'fill-danger': item.status === 'out-of-stock',
+                        'fill-warning': item.status === 'low-stock',
+                        'fill-success': item.status === 'in-stock'
+                      }"
+                    ></div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+                    'badge-success': item.status === 'in-stock',
+                    'badge-warning': item.status === 'low-stock',
+                    'badge-danger': item.status === 'out-of-stock'
+                  }"
+                >
+                  <span class="status-dot"></span>
+                  {{
+                    item.status === 'in-stock'
+                      ? '✓ In Stock'
+                      : item.status === 'low-stock'
+                        ? '⚠️ Low Stock'
+                        : '✕ Out of Stock'
+                  }}
+                </span>
+              </td>
+              <td>
+                <span class="time-text">{{ item.lastUpdated }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Low Stock Alert Info -->
+  <div class="alert-info">
+    <div class="alert-icon">ℹ️</div>
+    <div class="alert-content">
+      <div class="alert-title">Low Stock Alert</div>
+      <div class="alert-description">
+        {{ lowStockCount + outOfStockCount }} items require attention.
+        Consider restocking or ordering more inventory.
+      </div>
+    </div>
+  </div>
+
+</div>
